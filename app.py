@@ -1,12 +1,10 @@
-from flask import Flask, request, jsonify, make_response
-from flask_cors import CORS
+from flask import Flask, request, jsonify
 import openai
 import os
 import pdfkit
 from tempfile import NamedTemporaryFile
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://0a60d95d-49f5-432e-be40-14ddbdf973c5-00-5w0n7hthz700.picard.replit.dev"}})
 
 @app.after_request
 def apply_cors(response):
