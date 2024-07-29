@@ -40,7 +40,7 @@ class ReportGenerator:
             "subject": "A.I. API is down - Business A.I. Insights Report",
             "message": error_message
         }).encode("utf-8")
-        req = urllib.request.Request(f"https://formspree.io/{self.formspree_email}", data=data, headers={'content-type': 'application/json'})
+        req = urllib.request.Request(f"https://formspree.io/f/{self.formspree_email}", data=data, headers={'content-type': 'application/json'})
         urllib.request.urlopen(req)
 
 app = Flask(__name__)
@@ -53,7 +53,7 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     return response
 
-report_generator = ReportGenerator(os.getenv("OPENAI_API_KEY"), "YOUR_FORMSPREE_EMAIL")
+report_generator = ReportGenerator(os.getenv("OPENAI_API_KEY"), "FORMSPREE_EMAIL")
 
 @app.route('/', methods=['GET'])
 def frontpage():
@@ -63,6 +63,7 @@ def frontpage():
 def generate_report():
     try:
         data = request.json
+        print(data)
         answers = data.get('answers')
         additional_info = data.get('additionalInfo')
 
