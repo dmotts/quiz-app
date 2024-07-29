@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import openai
 import os
 import pdfkit
 from tempfile import NamedTemporaryFile
-import requests
+import urllib.request
+import json
 
 class ReportGenerator:
     def __init__(self, openai_key, formspree_email):
@@ -35,20 +36,24 @@ class ReportGenerator:
 
     def send_error_report(self, error):
         error_message = f"An error occurred in the A.I. report generation API: {str(error)}"
-        requests.post(f"https://formspree.io/{self.formspree_email}", json={
+        data = json.dumps({
             "subject": "A.I. API is down - Business A.I. Insights Report",
             "message": error_message
-        })
+        }).encode("utf-8")
+        req = urllib.request.Request(f"https://formspree.io/{self.formspree_email}", data=data, headers={'content-type': 'application/json'})
+        urllib.request.urlopen(req)
 
 app = Flask(__name__)
-report_generator = ReportGenerator(os.getenv("OPENAI_API_KEY"), "YOUR_FORMSPREE_EMAIL")
 
+# CORS handling manually
 @app.after_request
-def apply_cors(response):
-    response.headers["Access-Control-Allow-Origin"] = "https://0a60d95d-49f5-432e-be40-14ddbdf973c5-00-5w0n7hthz700.picard.replit.dev"
-    response.headers["Access-Control-Allow-Methods"] = "POST"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'https://0a60d95d-49f5-432e-be40-14ddbdf973c5-00-5w0n7hthz700.picard.replit.dev')
+    response.headers.add('Access-Control-Allow-Methods', 'POST')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     return response
+
+report_generator = ReportGenerator(os.getenv("OPENAI_API_KEY"), "YOUR_FORMSPREE_EMAIL")
 
 @app.route('/', methods=['GET'])
 def frontpage():
