@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import openai
 import os
@@ -6,7 +6,14 @@ import pdfkit
 from tempfile import NamedTemporaryFile
 
 app = Flask(__name__)
-CORS(app)  # This will allow all domains by default
+CORS(app, resources={r"/*": {"origins": "https://0a60d95d-49f5-432e-be40-14ddbdf973c5-00-5w0n7hthz700.picard.replit.dev"}})
+
+@app.after_request
+def apply_cors(response):
+    response.headers["Access-Control-Allow-Origin"] = "https://0a60d95d-49f5-432e-be40-14ddbdf973c5-00-5w0n7hthz700.picard.replit.dev"
+    response.headers["Access-Control-Allow-Methods"] = "POST"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return response
 
 @app.route('/', methods=['GET'])
 def frontpage():
