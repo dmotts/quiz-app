@@ -22,6 +22,7 @@ def generate_report():
     try:
         # Extract data from request
         data = request.json
+        print(data)
         answers = data.get('answers')
         additional_info = data.get('additionalInfo')
 
