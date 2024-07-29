@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import openai
 import os
 import pdfkit
 from tempfile import NamedTemporaryFile
 
 app = Flask(__name__)
+CORS(app)  # This will allow all domains by default
 
 @app.route('/', methods=['GET'])
 def frontpage():
@@ -50,7 +52,6 @@ def generate_report():
 
     except Exception as e:
         # Handle errors by sending an email via Formspree and notify the user
-        # You should set up Formspree or similar service
         send_error_report(e)
         return jsonify({
             "message": "There was an issue generating your report. We are looking into it.",
