@@ -65,10 +65,9 @@ def generate_report():
         }), 500
 
 def send_error_report(error):
-    import requests
     formspree_url = "https://formspree.io/YOUR_FORMSPREE_EMAIL"
     error_message = f"An error occurred in the A.I. report generation API: {str(error)}"
-    requests.post(formspree_url, json={
+    request.post(formspree_url, json={
         "subject": "A.I. API is down - Business A.I. Insights Report",
         "message": error_message
     })
