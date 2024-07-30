@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import openai
+from openai import OpenAI
 import os
 import pdfkit
 from tempfile import NamedTemporaryFile
@@ -19,9 +19,10 @@ class ReportGenerator:
 
     def generate_report(self, answers, additional_info):
         prompt = self.generate_prompt(answers, additional_info)
+        client = OpenAI()
 
-        openai.api_key = self.openai_key
-        response = openai.Completion.create(
+        client.api_key = self.openai_key
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
