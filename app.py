@@ -21,10 +21,10 @@ class ReportGenerator:
         prompt = self.generate_prompt(answers, additional_info)
 
         openai.api_key = self.openai_key
-        response = openai.ChatCompletion.create(
+        response = openai.Completion.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are an expert in generating business A.I. insights reports."},
+                {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=1500
