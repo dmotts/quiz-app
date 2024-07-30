@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify
 import openai
 import os
 import pdfkit
@@ -40,20 +40,20 @@ class ReportGenerator:
             "subject": "A.I. API is down - Business A.I. Insights Report",
             "message": error_message
         }).encode("utf-8")
-        req = urllib.request.Request(f"https://formspree.io/f/{self.formspree_email}", data=data, headers={'content-type': 'application/json'})
+        req = urllib.request.Request(f"https://formspree.io/{self.formspree_email}", data=data, headers={'content-type': 'application/json'})
         urllib.request.urlopen(req)
 
 app = Flask(__name__)
 
+report_generator = ReportGenerator(os.getenv("OPENAI_API_KEY"), "FORMSPREE_EMAIL")
+
 # CORS handling manually
 @app.after_request
 def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', 'https://0a60d95d-49f5-432e-be40-14ddbdf973c5-00-5w0n7hthz700.picard.replit.dev')
+    response.headers.add('Access-Control-Allow-Origin', 'https://dmotts.github.io')
     response.headers.add('Access-Control-Allow-Methods', 'POST')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     return response
-
-report_generator = ReportGenerator(os.getenv("OPENAI_API_KEY"), "FORMSPREE_EMAIL")
 
 @app.route('/', methods=['GET'])
 def frontpage():
@@ -63,7 +63,6 @@ def frontpage():
 def generate_report():
     try:
         data = request.json
-        print(data)
         answers = data.get('answers')
         additional_info = data.get('additionalInfo')
 
