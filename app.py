@@ -19,19 +19,23 @@ class ReportGenerator:
 
     def generate_report(self, answers, additional_info):
         prompt = self.generate_prompt(answers, additional_info)
-        client = OpenAI()
-
-        client.api_key = self.openai_key
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=1500
+        client = OpenAI(
+            api_key=self.openai_key
         )
 
-        return response.choices[0].message['content'].strip()
+        response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model="gpt-4o-mini",
+        )
+
+        print("Response: ", response)
+
+        return response
 
     def create_pdf(self, content):
         with NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
