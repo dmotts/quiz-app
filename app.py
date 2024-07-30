@@ -33,9 +33,9 @@ class ReportGenerator:
             model="gpt-4o-mini",
         )
 
-        print("Response: ", response)
+        print("Response: ", response.choices[0].message.content)
 
-        return response
+        return response.choices[0].message.content
 
     def create_pdf(self, content):
         with NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
