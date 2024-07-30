@@ -21,13 +21,16 @@ class ReportGenerator:
         prompt = self.generate_prompt(answers, additional_info)
 
         openai.api_key = self.openai_key
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
+        response = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are an expert in generating business A.I. insights reports."},
+                {"role": "user", "content": prompt}
+            ],
             max_tokens=1500
         )
 
-        return response.choices[0].text.strip()
+        return response.choices[0].message['content'].strip()
 
     def create_pdf(self, content):
         with NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
