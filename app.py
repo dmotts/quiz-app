@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import os
+from openai import OpenAI
 import json
 import urllib.request
 from tempfile import NamedTemporaryFile
