@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import os
-import requests
 import json
+import urllib.request
 from tempfile import NamedTemporaryFile
 
 class ReportGenerator:
@@ -36,17 +36,20 @@ class ReportGenerator:
             "x-api-key": self.pdfco_api_key,
             "Content-Type": "application/json"
         }
-        payload = {
+        payload = json.dumps({
             "html": f"<html><body>{content}</body></html>",
             "name": "report.pdf"
-        }
-        response = requests.post(url, headers=headers, data=json.dumps(payload))
-        response_data = response.json()
+        }).encode("utf-8")
 
-        if response.status_code != 200 or not response_data.get("url"):
-            raise Exception("Failed to generate PDF")
+        req = urllib.request.Request(url, data=payload, headers=headers, method='POST')
+        with urllib.request.urlopen(req) as response:
+            response_data = response.read()
+            response_json = json.loads(response_data)
 
-        return response_data["url"]
+        if response_json.get("error"):
+            raise Exception(f"PDF generation error: {response_json['message']}")
+
+        return response_json["url"]
 
     def send_error_report(self, error):
         error_message = f"An error occurred in the A.I. report generation API: {str(error)}"
