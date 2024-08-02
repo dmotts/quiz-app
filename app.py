@@ -70,7 +70,11 @@ class ReportGenerator:
             "subject": "A.I. API is down - Business A.I. Insights Report",
             "message": error_message
         }).encode("utf-8")
-        req = urllib.request.Request(f"https://formspree.io/{self.formspree_email}", data=data, headers={'content-type': 'application/json'})
+        req = urllib.request.Request(
+            f"https://formspree.io/f/{self.formspree_email}",
+            data=data,
+            headers={'content-type': 'application/json'}
+        )
         urllib.request.urlopen(req)
 
 app = Flask(__name__)
