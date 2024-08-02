@@ -17,7 +17,7 @@ class ReportGenerator:
             f"Additional information: {additional_info}. Include actionable insights and potential strategies."
         )
 
-        def generate_report(self, answers, additional_info):
+    def generate_report(self, answers, additional_info):
             """
             prompt = self.generate_prompt(answers, additional_info)
             client = OpenAI(
