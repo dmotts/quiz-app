@@ -47,7 +47,7 @@ class ReportGenerator:
     def create_pdf(self, content):
         url = "https://api.pdf.co/v1/pdf/convert/from/html"
         headers = {
-            "x-api-key": self.pdfco_api_key,
+            "x-api-key": str(self.pdfco_api_key),
             "Content-Type": "application/json"
         }
         payload = json.dumps({
@@ -120,6 +120,7 @@ def generate_report():
         return jsonify({"downloadUrl": pdf_url})
 
     except Exception as e:
+        logging.error(f"Error generating report: {e}")
         report_generator.send_error_report(e)
         return jsonify({
             "message": "There was an issue generating your report. We are looking into it.",
