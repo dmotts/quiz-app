@@ -160,26 +160,28 @@ class ReportGenerator:
 </body>
 </html>
     """
-    payload = json.dumps({
-        "html": html_content,
-        "name": "report.pdf"
-    }).encode("utf-8")
-
-    # Log the request for debugging
-    logging.debug(f"Creating PDF with payload: {payload.decode('utf-8')}")
-
-    req = urllib.request.Request(url, data=payload, headers=headers, method='POST')
-    with urllib.request.urlopen(req) as response:
-        response_data = response.read()
-        response_json = json.loads(response_data)
-
-    # Log the response for debugging
-    logging.debug(f"Received response: {response_json}")
-
-    if response_json.get("error"):
-        raise Exception(f"PDF generation error: {response_json['message']}")
-
-    return response_json["url"]
+        
+        payload = json.dumps({
+            "html": html_content,
+            "name": "report.pdf"
+        }).encode("utf-8")
+    
+        # Log the request for debugging
+        logging.debug(f"Creating PDF with payload: {payload.decode('utf-8')}")
+    
+        req = urllib.request.Request(url, data=payload, headers=headers, method='POST')
+        with urllib.request.urlopen(req) as response:
+            response_data = response.read()
+            response_json = json.loads(response_data)
+    
+        # Log the response for debugging
+        logging.debug(f"Received response: {response_json}")
+    
+        if response_json.get("error"):
+            raise Exception(f"PDF generation error: {response_json['message']}")
+            
+        
+        return response_json["url"]
 
     def send_error_report(self, error):
         error_message = f"An error occurred in the A.I. report generation API: {str(error)}"
