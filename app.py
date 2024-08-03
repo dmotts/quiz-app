@@ -24,7 +24,7 @@ class ReportGenerator:
         prompt = self.generate_prompt(answers, additional_info)
         client = OpenAI(api_key=self.openai_key)
 
-        response = client.ChatCompletion.create(
+        response = client.chat.completions.create(
             messages=[
                 {"role": "user", "content": prompt}
             ],
