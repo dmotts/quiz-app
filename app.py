@@ -50,26 +50,136 @@ class ReportGenerator:
             "x-api-key": str(self.pdfco_api_key),
             "Content-Type": "application/json"
         }
-        payload = json.dumps({
-            "html": f"<html><body>{content}</body></html>",
-            "name": "report.pdf"
-        }).encode("utf-8")
+        html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business A.I. Insights Report</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }}
+        header {{
+            text-align: center;
+            margin-bottom: 40px;
+        }}
+        header h1 {{
+            font-size: 2.5em;
+            margin: 0;
+        }}
+        section {{
+            margin-bottom: 20px;
+        }}
+        h2, h3 {{
+            color: #2c3e50;
+        }}
+        .section-title {{
+            border-bottom: 2px solid #2980b9;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }}
+        .insight {{
+            margin-bottom: 10px;
+        }}
+        .insight-title {{
+            font-weight: bold;
+            margin-bottom: 5px;
+        }}
+        .insight-content {{
+            margin-left: 20px;
+        }}
+        .strategies {{
+            list-style-type: disc;
+            margin-left: 40px;
+        }}
+        .timeline {{
+            border-left: 3px solid #2980b9;
+            padding-left: 15px;
+            margin-left: 10px;
+        }}
+        .timeline-item {{
+            margin-bottom: 20px;
+        }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Business A.I. Insights Report</h1>
+        <p>To leverage AI technologies aimed at increasing sales and enhancing customer service within a timeframe of 1-3 months.</p>
+    </header>
+    <section>
+        <div class="section-title">
+            <h2>Overview</h2>
+        </div>
+        <p>The insights provided in this report are rooted in the goal of increasing sales while simultaneously elevating customer service levels. In an increasingly competitive marketplace, employing artificial intelligence can streamline operations, personalize customer experiences, and gain deeper insights into consumer behavior.</p>
+    </section>
+    <section>
+        <div class="section-title">
+            <h2>Key Opportunities</h2>
+        </div>
+        {content}
+    </section>
+    <section>
+        <div class="section-title">
+            <h2>Implementation Timeline (1-3 Months)</h2>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <h3>Month 1:</h3>
+                <ul>
+                    <li><strong>Tool Assessment:</strong> Research and select AI tools that best fit your business needs (e.g., chatbot platforms, predictive analytics software).</li>
+                    <li><strong>Data Gathering:</strong> Begin gathering and cleaning customer data across platforms to enhance the AI algorithm's effectiveness.</li>
+                </ul>
+            </div>
+            <div class="timeline-item">
+                <h3>Month 2:</h3>
+                <ul>
+                    <li><strong>Deployment of Chatbots:</strong> Set up and test the chatbot, implementing the FAQ database and ensuring integration with existing customer service tools.</li>
+                    <li><strong>Market Segmentation:</strong> Utilize AI analytics to segment your customer base and start designing personalized marketing materials.</li>
+                </ul>
+            </div>
+            <div class="timeline-item">
+                <h3>Month 3:</h3>
+                <ul>
+                    <li><strong>Launch Campaigns:</strong> Roll out targeted marketing campaigns and introduce the AI chatbot online.</li>
+                    <li><strong>Feedback Loop:</strong> Begin collecting customer feedback on the new services and analyze using sentiment analysis tools. Adjust strategies based on findings.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="section-title">
+            <h2>Conclusion</h2>
+        </div>
+        <p>By capitalizing on AI technologies in a structured approach, businesses can enhance sales outcomes and significantly improve customer service efficiency within a short period. Focused efforts on personalized marketing, AI-driven customer support, and analytics will pave the way for fulfilling the outlined objectives.</p>
+        <p>Investing in these strategies places businesses in a favorable position to not only meet but exceed customer expectations, ultimately resulting in improved sales performance.</p>
+    </section>
+</body>
+</html>
+    """
+    payload = json.dumps({
+        "html": html_content,
+        "name": "report.pdf"
+    }).encode("utf-8")
 
-        # Log the request for debugging
-        logging.debug(f"Creating PDF with payload: {payload.decode('utf-8')}")
+    # Log the request for debugging
+    logging.debug(f"Creating PDF with payload: {payload.decode('utf-8')}")
 
-        req = urllib.request.Request(url, data=payload, headers=headers, method='POST')
-        with urllib.request.urlopen(req) as response:
-            response_data = response.read()
-            response_json = json.loads(response_data)
+    req = urllib.request.Request(url, data=payload, headers=headers, method='POST')
+    with urllib.request.urlopen(req) as response:
+        response_data = response.read()
+        response_json = json.loads(response_data)
 
-        # Log the response for debugging
-        logging.debug(f"Received response: {response_json}")
+    # Log the response for debugging
+    logging.debug(f"Received response: {response_json}")
 
-        if response_json.get("error"):
-            raise Exception(f"PDF generation error: {response_json['message']}")
+    if response_json.get("error"):
+        raise Exception(f"PDF generation error: {response_json['message']}")
 
-        return response_json["url"]
+    return response_json["url"]
 
     def send_error_report(self, error):
         error_message = f"An error occurred in the A.I. report generation API: {str(error)}"
